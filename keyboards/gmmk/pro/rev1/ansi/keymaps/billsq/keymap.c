@@ -68,9 +68,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #ifdef ENCODER_ENABLE
 bool encoder_update_user(uint8_t index, bool clockwise) {
     if (clockwise) {
-      tap_code(KC_MS_WH_DOWN);
+      //tap_code(KC_MS_WH_DOWN);
+      tap_code(KC_VOLU);
     } else {
-      tap_code(KC_MS_WH_UP);
+      //tap_code(KC_MS_WH_UP);
+      tap_code(KC_VOLD);
     }
     return true;
 }
