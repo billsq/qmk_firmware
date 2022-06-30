@@ -22,6 +22,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     #endif
 #endif // RGB_MATRIX_ENABLE
 
+enum custom_keycodes {
+    KVM_1 = SAFE_RANGE,
+    KVM_2,
+    KVM_3,
+    KVM_4
+};
+
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -56,10 +63,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	[1] = LAYOUT(
         _______, KC_MYCM, KC_WHOM, KC_CALC, KC_MSEL, KC_MPRV, KC_MNXT, KC_MPLY, KC_MSTP, KC_MUTE, KC_VOLD, KC_VOLU, _______, KC_INS,           _______,
-        _______, RGB_TOG, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          KC_PSCR,
+        RGB_TOG, KVM_1,   KVM_2,   KVM_3,   KVM_4,   _______, _______, _______, _______, _______, _______, _______, _______, _______,          KC_PSCR,
         _______, _______, RGB_VAI, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, RESET,            _______,
         _______, _______, RGB_VAD, _______, _______, _______, _______, _______, _______, _______, _______, _______,          _______,          _______,
-        _______,          _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, _______,
+        _______,          _______, RGB_HUI, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          _______, RGB_MOD, KC_SCRL,
         _______, _______, _______,                            _______,                            _______, _______, _______, RGB_SPD, RGB_RMOD, RGB_SPI
     )
 };
@@ -118,6 +125,8 @@ bool led_update_user(led_t led_state) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    uint16_t kvm_keycode = 0;
+
     switch (keycode) {
     #ifdef NKRO_ENABLE
     #if RGB_CONFIRMATION_BLINKING_TIME > 0
@@ -205,7 +214,32 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
                 }
             }
             break;
+
+        case KVM_1:
+            kvm_keycode = KC_1;
+            break;
+        case KVM_2:
+            kvm_keycode = KC_2;
+            break;
+        case KVM_3:
+            kvm_keycode = KC_3;
+            break;
+        case KVM_4:
+            kvm_keycode = KC_4;
+            break;
     }
+
+    if (kvm_keycode != 0 && record->event.pressed) {
+        register_code(KC_SCRL);
+        unregister_code(KC_SCRL);
+        register_code(KC_SCRL);
+        unregister_code(KC_SCRL);
+        register_code(kvm_keycode);
+        unregister_code(kvm_keycode);
+        register_code(KC_ENT);
+        unregister_code(KC_ENT);
+    }
+
     return true;
 }
 
